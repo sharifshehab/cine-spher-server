@@ -60,6 +60,28 @@ async function run() {
             res.send(result);
         });
 
+        // update movie
+        app.put('/movies/:id', async (req, res) => { 
+            const id = req.params.id;
+            const movie = req.body;
+            console.log('update user new data', movie);
+            const filter = { _id: new ObjectId(id) }
+            const option = { upsert: true }
+            const updateMovie = {
+                $set: {
+                    title:movie.title,
+                    poster:movie.poster,
+                    genre:movie.genre,
+                    duration:movie.duration,
+                    releaseYear:movie.releaseYear,
+                    rating:movie.rating,
+                    summary:movie.summary
+                }
+            }
+            const result = await movieCollection.updateOne(filter, updateMovie, option);
+            res.send(result);
+        });
+
         // delete movie
         app.delete('/movies/:id', async (req, res) => {
             const id = req.params.id;
@@ -94,6 +116,8 @@ async function run() {
             const result = await favoriteCollection.deleteOne(query);
             res.send(result);
         });
+
+        
 
 
         // Send a ping to confirm a successful connection
