@@ -32,6 +32,7 @@ async function run() {
 
         const database = client.db("cineSphereDB");
         const movieCollection = database.collection("movies");
+        const favoriteCollection = database.collection("favorites");
 
         // add movies 
         app.post('/movies', async (req, res) => {
@@ -64,6 +65,33 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await movieCollection.deleteOne(query);
+            res.send(result);
+        });
+
+        // add to favorite
+        app.post('/favorites', async (req, res) => {
+            const { _id, ...rest } = req.body;
+            const favoriteMovie = {
+                ...rest,
+                _id: new ObjectId(_id),
+            };
+            const result = await favoriteCollection.insertOne(favoriteMovie);
+            res.send(result);
+        })
+
+        // get favorite movies by user
+        app.get('/favorites', async (req, res) => {
+            const userEmail = req.query.email;
+            const query = { email: userEmail };
+            const result = await favoriteCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        // delete favorite movie
+        app.delete('/favorites/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await favoriteCollection.deleteOne(query);
             res.send(result);
         });
 
