@@ -42,7 +42,15 @@ async function run() {
 
         // get all the movies
         app.get('/movies', async (req, res) => {
-            const result = await movieCollection.find().toArray();
+
+            const limit = parseInt(req.query.limit);
+            let query = movieCollection.find().sort({ rating: -1 });
+
+            if (limit) {
+                query = query.limit(limit);
+            }
+
+            const result = await query.toArray();
             res.send(result);
         });
 
