@@ -42,14 +42,11 @@ async function run() {
 
         // get all the movies
         app.get('/movies', async (req, res) => {
-
             const limit = parseInt(req.query.limit);
             let query = movieCollection.find().sort({ rating: -1 });
-
             if (limit) {
                 query = query.limit(limit);
             }
-
             const result = await query.toArray();
             res.send(result);
         });
@@ -59,6 +56,14 @@ async function run() {
             const id = req.params.id;
             let query = { _id: new ObjectId(id) }
             const result = await movieCollection.find(query).toArray();
+            res.send(result);
+        });
+
+        // delete movie
+        app.delete('/movies/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await movieCollection.deleteOne(query);
             res.send(result);
         });
 
