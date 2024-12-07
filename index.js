@@ -24,7 +24,6 @@ const client = new MongoClient(uri, {
 });
 
 
-
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -43,8 +42,17 @@ async function run() {
 
         // get all the movies
         app.get('/movies', async (req, res) => {
+            const searchValue = req.query.search;
             const limit = parseInt(req.query.limit);
-            let query = movieCollection.find().sort({ rating: -1 });
+
+            let search = {}
+            if (typeof searchValue === 'string' && searchValue.trim() !== '') {
+                search = {
+                    title: { $regex: searchValue, $options: "i" }
+                }
+            }
+            let query = movieCollection.find(search).sort({ rating: -1 });
+
             if (limit) {
                 query = query.limit(limit);
             }
