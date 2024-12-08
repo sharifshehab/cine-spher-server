@@ -40,7 +40,7 @@ async function run() {
             res.send(result);
         });
 
-        // get all the movies
+        // get all the movies, top-6 and search result
         app.get('/movies', async (req, res) => {
             const searchValue = req.query.search;
             const limit = parseInt(req.query.limit);
@@ -147,6 +147,3 @@ app.listen(port, () => {
     console.log(`Server Running on port ${port}`);
 })
 
-/* 
-
-*/
