@@ -42,6 +42,15 @@ async function run() {
 
         // get all the movies, top-6 and search result
         app.get('/movies', async (req, res) => {
+
+            // Fetch only category names
+            if (req.query?.category === 'genre') {
+                const items = await movieCollection.find().project({ genre: 1 }).toArray();
+                const allGenres = items.flatMap(item => item.genre);
+                const uniqueGenres = [...new Set(allGenres)];
+                return res.send(uniqueGenres);
+            }
+
             const searchValue = req.query.search;
             const limit = parseInt(req.query.limit);
 
@@ -124,9 +133,6 @@ async function run() {
             const result = await favoriteCollection.deleteOne(query);
             res.send(result);
         });
-
-        
-
 
         // Send a ping to confirm a successful connection
         // await client.db("admin").command({ ping: 1 });
