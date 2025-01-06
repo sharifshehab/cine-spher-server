@@ -53,6 +53,11 @@ async function run() {
 
             const searchValue = req.query.search;
             const limit = parseInt(req.query.limit);
+            const sortBy = req.query.sortBy || 'desc';
+
+            // Log received parameters for debugging
+            console.log("Search Value:", searchValue);
+            console.log("Sort By:", sortBy);
 
             let search = {}
             if (typeof searchValue === 'string' && searchValue.trim() !== '') {
@@ -60,7 +65,14 @@ async function run() {
                     title: { $regex: searchValue, $options: "i" }
                 }
             }
-            let query = movieCollection.find(search).sort({ rating: -1 });
+
+            let query = movieCollection.find(search);
+
+            if (sortBy === 'asc') {
+                query = query.sort({ rating: 1 });
+            } else {
+                query = query.sort({ rating: -1 });
+            }
 
             if (limit) {
                 query = query.limit(limit);
