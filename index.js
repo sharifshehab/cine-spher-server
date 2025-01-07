@@ -55,10 +55,6 @@ async function run() {
             const limit = parseInt(req.query.limit);
             const sortBy = req.query.sortBy || 'desc';
 
-            // Log received parameters for debugging
-            console.log("Search Value:", searchValue);
-            console.log("Sort By:", sortBy);
-
             let search = {}
             if (typeof searchValue === 'string' && searchValue.trim() !== '') {
                 search = {
